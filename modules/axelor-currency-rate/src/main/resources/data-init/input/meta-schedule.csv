@@ -1,0 +1,2 @@
+"name";"description";"cron";"job";"active"
+"nbkr-daily-sync";"Daily currency rate sync from NBKR (09:00 Asia/Bishkek)";"0 0 9 * * ?";"com.axelor.apps.currencyrate.job.NbkrSyncJob";"true"

@@ -1,0 +1,40 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: axelor-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-axelor}
+      POSTGRES_USER: ${DB_USER:-axelor}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-axelor}
+    volumes:
+      - axelor_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-axelor} -d ${DB_NAME:-axelor}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  axelor:
+    build: .
+    container_name: axelor-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-axelor}
+      DB_USER: ${DB_USER:-axelor}
+      DB_PASSWORD: ${DB_PASSWORD:-axelor}
+      TZ: Asia/Bishkek
+      CATALINA_OPTS: "-Xmx2g -Xms512m"
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  axelor_pgdata:

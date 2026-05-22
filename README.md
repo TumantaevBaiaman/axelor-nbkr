@@ -1,36 +1,72 @@
-Axelor Open Suite
-================================
+# Axelor NBKR Currency Rate
 
-Axelor Open Suite reduces the complexity and improve responsiveness of business processes. Thanks to its modularity, you can start with few features and  then activate other modules when needed.
+Модуль для Axelor ERP, который тянет курсы валют с сайта НБКР
+(https://www.nbkr.kg/XML/daily.xml) и сохраняет в базу.
 
-Axelor Open Suite includes the following modules :
+## Что делает
 
-* Customer Relationship Management
-* Sales management
-* Financial and cost management
-* Human Resource Management
-* Project Management
-* Inventory and Supply Chain Management
-* Production Management
-* Multi-company, multi-currency and multi-lingual
+- Каждый день в 09:00 сам подтягивает курсы
+- Есть кнопка для ручного запуска
+- За одну дату записи не дублируются — обновляются
 
-Axelor Open Suite is built on top of [Axelor Open Platform](https://github.com/axelor/axelor-open-platform)
+## Поля сущности CurrencyRate
 
+- `code` — код валюты (USD, EUR, ...)
+- `name` — название
+- `nominal` — номинал
+- `rate` — курс в KGS
+- `rateDate` — дата курса
 
-Installation
-================================
+## Стек
 
-To compile and run from source, you will need to clone Axelor Open Suite modules, which is a
-[git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) repository, using following commands:
+- Axelor 9.0.9
+- Java 21
+- PostgreSQL 16
+- Docker
+
+## Запуск
+
+Нужен Docker.
 
 ```bash
-$ git clone git@github.com:axelor/open-suite-webapp.git
-$ cd open-suite-webapp
-$ git checkout master
-$ git submodule init
-$ git submodule update
-$ git submodule foreach git checkout master
-$ git submodule foreach git pull origin master
+git clone https://github.com/TumantaevBaiaman/axelor-nbkr.git
+cd axelor-nbkr
+docker compose up --build
 ```
 
-You can find more detailed [installation instructions](https://docs.axelor.com/abs/5.0/install/index.html) on our documentation.
+Первая сборка долгая (~15 мин).
+
+Открыть: http://localhost:8080
+Логин: `admin` / `admin`
+
+## Ручной запуск
+
+Меню слева: **Currency rates → NBKR daily rates** → кнопка **Refresh from NBKR**.
+
+## CRON
+
+Настраивается в админке:
+**Administration → Application configuration → Job scheduler → New**
+
+- Job class: `com.axelor.apps.currencyrate.job.NbkrSyncJob`
+- Cron: `0 0 9 * * ?`
+
+## Что добавил
+
+```
+modules/axelor-currency-rate/
+├── build.gradle
+└── src/main/
+    ├── java/com/axelor/apps/currencyrate/
+    │   ├── service/NbkrCurrencyRateService.java
+    │   ├── web/CurrencyRateController.java
+    │   └── job/NbkrSyncJob.java
+    └── resources/
+        ├── module.properties
+        ├── domains/CurrencyRate.xml
+        └── views/CurrencyRate.xml
+
+Dockerfile
+docker-compose.yml
+.env
+```

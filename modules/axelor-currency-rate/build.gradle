@@ -1,0 +1,12 @@
+plugins {
+  id 'com.axelor.app'
+}
+
+axelor {
+  title = "NBKR Currency Rate"
+  description = "Daily currency rate sync from National Bank of Kyrgyz Republic"
+}
+
+dependencies {
+  api project(":modules:axelor-base")
+}

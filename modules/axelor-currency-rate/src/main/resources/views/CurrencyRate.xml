@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="currency-rate-grid" title="Currency Rates (NBKR)"
+    model="com.axelor.apps.currencyrate.db.CurrencyRate" orderBy="-rateDate,code">
+    <toolbar>
+      <button name="refreshBtn" title="Refresh from NBKR" icon="arrow-clockwise"
+        onClick="action-currency-rate-refresh"/>
+    </toolbar>
+    <field name="rateDate"/>
+    <field name="code"/>
+    <field name="name"/>
+    <field name="nominal"/>
+    <field name="rate"/>
+  </grid>
+
+  <form name="currency-rate-form" title="Currency Rate"
+    model="com.axelor.apps.currencyrate.db.CurrencyRate">
+    <panel name="mainPanel" title="Rate" colSpan="12">
+      <field name="rateDate"/>
+      <field name="code"/>
+      <field name="name"/>
+      <field name="nominal"/>
+      <field name="rate"/>
+    </panel>
+  </form>
+
+  <action-method name="action-currency-rate-refresh">
+    <call class="com.axelor.apps.currencyrate.web.CurrencyRateController"
+      method="refreshFromNbkr"/>
+  </action-method>
+
+  <menuitem name="menu-currency-rate-root" title="Currency rates" order="100"
+    icon="currency-exchange"/>
+
+  <menuitem name="menu-currency-rate-list" parent="menu-currency-rate-root"
+    title="NBKR daily rates" action="action-currency-rate-list"/>
+
+  <action-view name="action-currency-rate-list" title="Currency Rates (NBKR)"
+    model="com.axelor.apps.currencyrate.db.CurrencyRate">
+    <view type="grid" name="currency-rate-grid"/>
+    <view type="form" name="currency-rate-form"/>
+  </action-view>
+
+</object-views>

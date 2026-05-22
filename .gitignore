@@ -45,3 +45,7 @@ hs_err_pid*
 
 # JavaScript
 node_modules
+
+# Docker / local config
+.env
+*.bak

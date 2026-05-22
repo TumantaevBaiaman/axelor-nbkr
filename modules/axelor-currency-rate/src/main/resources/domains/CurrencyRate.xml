@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models
+  http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="currency-rate" package="com.axelor.apps.currencyrate.db"/>
+
+  <entity name="CurrencyRate" cacheable="true">
+
+    <string name="code" title="Currency code" required="true" min="3" max="3"
+      help="ISO 4217 currency code, e.g. USD, EUR, RUB"/>
+
+    <string name="name" title="Currency name" help="Human-readable currency name from NBKR"/>
+
+    <integer name="nominal" title="Nominal" required="true" default="1"
+      help="Number of foreign currency units for the rate"/>
+
+    <decimal name="rate" title="Rate (KGS)" required="true" precision="20" scale="6"
+      help="Rate in Kyrgyz Som (KGS) for the given nominal"/>
+
+    <date name="rateDate" title="Rate date" required="true"
+      help="Date of the rate as published by NBKR"/>
+
+    <unique-constraint columns="code,rateDate"/>
+
+    <finder-method name="findByCodeAndDate" using="code,rateDate"/>
+
+  </entity>
+
+</domain-models>
